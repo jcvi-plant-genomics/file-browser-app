@@ -1,0 +1,11 @@
+[data-app-name="file-browser-app"],
+[data-app-name="file-browser-app"] .browser {
+  position: relative;
+}
+
+[data-app-name="file-browser-app"] .indicator {
+  position: absolute;
+  top: -15px;
+  right: 0;
+  opacity: 0.75;
+}
