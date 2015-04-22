@@ -24,6 +24,7 @@
     '<% } else if (file.type === \'dir\'){%>' +
     '<button title="Open" name="open" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i><span class="sr-only">Open</span></button> '+
     '<% } %></td></tr><% }); %>');
+  templates.displayPath = _.template('<% _.each(parts, function(part) { %><a href="#<%= part.path %>"><%= part.name %></a>/<% })%>');
 
   var nextSuffix = {
     'bytes': 'KB',
@@ -61,27 +62,38 @@
 
   function selectSystem(systemId) {
     currentSystemId = systemId;
-    currentPath = currentUser.username;
-    indicator({show:true});
-    new Promise(function( res, rej ) {
-      Agave.api.files.list({ systemId: currentSystemId, filePath: currentPath }, function(resp) {
-        res(resp.obj.result);
-      }, rej);
-    })
-    .then(displayFiles)
-    .then(indicator);
+    openPath( currentUser.username );
   }
 
   function displayFiles(files) {
+    if ( files[0].name === '.' && files[0].path.indexOf('/') !== -1 ) {
+      files[0].name = '..';
+      files[0].path = files[0].path.substring( 0, files[0].path.lastIndexOf( '/' ) );
+    }
     currentFiles = files;
-    $('.display-files', $appContext).html( templates.files({ files: currentFiles, niceFileSize: niceFileSize }));
-    $('button[name="open"]', $appContext).on('click', openDirectory);
+    $('.display-files', $appContext).html( templates.files( { files: currentFiles, niceFileSize: niceFileSize } ) );
+
+    $('.path', $appContext).html( templates.displayPath( {
+      parts: _.map( currentPath.split( '/' ), function(part) {
+        return {
+          name: part,
+          path: currentPath.substring( 0, (currentPath.indexOf( part ) + part.length) )
+        };
+      } )
+    } ) );
+    $('.path a', $appContext).on('click', function(e) {
+      e.preventDefault();
+      openPath( e.currentTarget.hash.substring( 1 ) );
+    });
+    $('button[name="open"]', $appContext).on( 'click', function(e) {
+      e.preventDefault();
+      var fileIndex = parseInt($(e.currentTarget).closest('tr').attr('data-file-index'));
+      openPath( currentFiles[fileIndex].path );
+    } );
   }
 
-  function openDirectory(event) {
-    event.preventDefault();
-    var fileIndex = parseInt($(event.currentTarget).closest('tr').attr('data-file-index'));
-    currentPath = currentFiles[fileIndex].path;
+  function openPath(path) {
+    currentPath = path;
     indicator({show:true});
     new Promise(function( res, rej ) {
       Agave.api.files.list({ systemId: currentSystemId, filePath: currentPath }, function(resp) {
