@@ -9,7 +9,8 @@
   var templates = {};
   var Agave;
   var currentUser;
-  var currentSystemId;
+  var systems;
+  var currentSystem;
   var currentFiles;
   var currentPath;
 
@@ -24,7 +25,6 @@
     '<% } else if (file.type === \'dir\'){%>' +
     '<button title="Open" name="open" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i><span class="sr-only">Open</span></button> '+
     '<% } %></td></tr><% }); %>');
-  templates.displayPath = _.template('<% _.each(parts, function(part) { %><a href="#<%= part.path %>"><%= part.name %></a>/<% })%>');
 
   var nextSuffix = {
     'bytes': 'KB',
@@ -52,51 +52,80 @@
     }
   }
 
-  function init(systems) {
+  function init() {
     $('select[name="system"]', $appContext)
     .html(templates.systems({ systems: systems }))
     .on('change', function() {
       selectSystem(this.value);
     });
+
+    $('button[name="directory-level-up"]', $appContext).on('click', function(e) {
+      e.preventDefault();
+      var path = currentPath.split('/').slice(0, -1).join('/');
+      path = path || systemDefaultPath( currentSystem );
+      openPath( path );
+    });
   }
 
   function selectSystem(systemId) {
-    currentSystemId = systemId;
-    openPath( currentUser.username );
+    $('.current-system-id').text(systemId || '#');
+    if (systemId) {
+      indicator({show: true});
+      new Promise(function(resolve, reject) {
+        Agave.api.systems.get({systemId: systemId}, function (resp) {
+          resolve(resp.obj.result);
+        }, function(err) {
+          reject(err);
+        });
+      })
+      .then(function(system) {
+        currentSystem = system;
+        return openPath( systemDefaultPath(currentSystem) );
+      })
+      .then(indicator);
+    } else {
+      currentSystem = currentPath = null;
+      displayFiles();
+    }
+  }
+
+  function systemDefaultPath(system) {
+    var path;
+    if ( system.id === 'araport-public-files' ) {
+      path = '/TAIR10_genome_release';
+    } else if ( system.public ) {
+      path = '/' + currentUser.username;
+    } else {
+      path = system.storage.homeDir;
+    }
+    return path;
   }
 
   function displayFiles(files) {
-    if ( files[0].name === '.' && files[0].path.indexOf('/') !== -1 ) {
-      files[0].name = '..';
-      files[0].path = files[0].path.substring( 0, files[0].path.lastIndexOf( '/' ) );
+    if (files) {
+      if ( files[0].name === '.' ) {
+        files.shift();
+      }
+      currentFiles = files;
+      $('.display-files', $appContext).html( templates.files( { files: currentFiles, niceFileSize: niceFileSize } ) );
+      $('button[name="open"]', $appContext).on( 'click', function(e) {
+        e.preventDefault();
+        var fileIndex = parseInt($(e.currentTarget).closest('tr').attr('data-file-index'));
+        openPath( currentFiles[fileIndex].path );
+      } );
+    } else {
+      currentFiles = null;
+      $('.display-files', $appContext).empty();
+      $('input[name="current-path"]', $appContext).val(null);
     }
-    currentFiles = files;
-    $('.display-files', $appContext).html( templates.files( { files: currentFiles, niceFileSize: niceFileSize } ) );
-
-    $('.path', $appContext).html( templates.displayPath( {
-      parts: _.map( currentPath.split( '/' ), function(part) {
-        return {
-          name: part,
-          path: currentPath.substring( 0, (currentPath.indexOf( part ) + part.length) )
-        };
-      } )
-    } ) );
-    $('.path a', $appContext).on('click', function(e) {
-      e.preventDefault();
-      openPath( e.currentTarget.hash.substring( 1 ) );
-    });
-    $('button[name="open"]', $appContext).on( 'click', function(e) {
-      e.preventDefault();
-      var fileIndex = parseInt($(e.currentTarget).closest('tr').attr('data-file-index'));
-      openPath( currentFiles[fileIndex].path );
-    } );
   }
 
   function openPath(path) {
     currentPath = path;
+    $('input[name="current-path"]', $appContext).val(path);
     indicator({show:true});
-    new Promise(function( res, rej ) {
-      Agave.api.files.list({ systemId: currentSystemId, filePath: currentPath }, function(resp) {
+    return new Promise(function( res, rej ) {
+      Agave.api.files.list({ systemId: currentSystem.id, filePath: currentPath }, function(resp) {
         res(resp.obj.result);
       }, rej);
     })
@@ -116,7 +145,8 @@
 
     new Promise( function( res, rej ) {
       Agave.api.systems.list({}, function(resp) {
-        res(_.filter(resp.obj.result, { 'type': 'STORAGE' }));
+        systems = _.filter(resp.obj.result, { 'type': 'STORAGE' });
+        res(systems);
       }, rej);
     })
     .then(init)

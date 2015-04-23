@@ -9,3 +9,19 @@
   right: 0;
   opacity: 0.75;
 }
+
+[data-app-name="file-browser-app"] .attach-top {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+[data-app-name="file-browser-app"] .attach-top .input-group-addon:first-child,
+[data-app-name="file-browser-app"] .attach-top .input-group-btn:first-child>.btn {
+  border-bottom-left-radius: 0;
+}
+
+
+[data-app-name="file-browser-app"] .attach-top .input-group-addon:last-child,
+[data-app-name="file-browser-app"] .attach-top .input-group-btn:last-child>.btn {
+  border-bottom-right-radius: 0;
+}
