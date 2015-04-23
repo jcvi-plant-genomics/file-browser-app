@@ -10,6 +10,10 @@
   opacity: 0.75;
 }
 
+[data-app-name="file-browser-app"] .current-system-id {
+  background-color: #ddd;
+}
+
 [data-app-name="file-browser-app"] .attach-top {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
