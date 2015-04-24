@@ -453,6 +453,14 @@
           "parameters": [
             {
               "allowMultiple": false,
+              "description": "The systemId.",
+              "name": "systemId",
+              "paramType": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "allowMultiple": false,
               "description": "The path of the file relative to the user's default storage location.",
               "name": "filePath",
               "paramType": "path",
@@ -468,6 +476,14 @@
           "nickname": "updatePermissions",
           "notes": "Due to the nature of the underlying file system, permissions are autonomous. READ and WRITE are exclusive. ALL implies ownership. If you want someone to be able to see and edit a document, give them all=true permissions.",
           "parameters": [
+            {
+              "allowMultiple": false,
+              "description": "The systemId.",
+              "name": "systemId",
+              "paramType": "path",
+              "required": true,
+              "type": "string"
+            },
             {
               "allowMultiple": false,
               "description": "The path of the file relative to the user's default storage location.",
@@ -494,6 +510,14 @@
           "nickname": "deletePermissions",
           "notes": "Once applied, users will not be able to view or edit these files anymore. Keep this in mind before calling this on data referenced by shared applications.",
           "parameters": [
+            {
+              "allowMultiple": false,
+              "description": "The systemId.",
+              "name": "systemId",
+              "paramType": "path",
+              "required": true,
+              "type": "string"
+            },
             {
               "allowMultiple": false,
               "description": "The path of the file relative to the user's default storage location.",
