@@ -74,7 +74,6 @@
     });
 
     $('a[name="directory-level-up"]', $appContext).on('click', function(e) {
-      console.log(e);
       e.preventDefault();
       var path = currentPath.split('/').slice(0, -1).join('/');
       path = path || systemDefaultPath( currentSystem );
@@ -140,14 +139,45 @@
       $('button[name="preview"]', $appContext).on( 'click', function(e) {
         e.preventDefault();
         var fileIndex = parseInt($(e.currentTarget).closest('tr').attr('data-file-index'));
-        preview( currentFiles[fileIndex] );
+        previewFile( currentFiles[fileIndex] );
       });
 
       $('button[name="download"]', $appContext).on( 'click', function(e) {
         e.preventDefault();
+        var $button = $(this);
+        var content = $button.html();
+        $button.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
         var fileIndex = parseInt($(e.currentTarget).closest('tr').attr('data-file-index'));
-        download( currentFiles[fileIndex] );
+        downloadFile( currentFiles[fileIndex] ).then(function() {
+          $button.attr('disabled', null).html(content);
+        }, function() {
+          $button.attr('disabled', null).html(content);
+        });
       });
+
+      $('button[name="delete"]', $appContext).on( 'click', function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        if (window.confirm('Are you sure you want to delete this file? This operation cannot be undone.')) {
+          var fileIndex = parseInt($(e.currentTarget).closest('tr').attr('data-file-index'));
+          deleteFile( currentFiles[fileIndex] ).then(function(file) {
+            $button.closest('tr').remove();
+            showAlert({
+              message: 'The file ' + file.name + ' has been deleted.',
+              type: 'success',
+              autoDismiss: 5000
+            });
+          },
+          function(error) {
+            showAlert({
+              message: error.message,
+              type: 'danger',
+              autoDismiss: 5000
+            });
+          });
+        }
+      });
+
     } else {
       currentFiles = null;
       $('.display-files', $appContext).empty();
@@ -172,8 +202,23 @@
     return p;
   }
 
-  function download(file) {
-    new Promise(function(resolve, reject) {
+  function deleteFile(file) {
+    var promise = new Promise(function(resolve, reject) {
+      Agave.api.files.delete({systemId: file.system, filePath: file.path},
+        function() { resolve(file); },
+        reject
+      );
+    });
+
+    promise.then(false, function(err) {
+      showAlert({ message: err.message, type: 'danger', autoDismiss: 5000 });
+    });
+
+    return promise;
+  }
+
+  function downloadFile(file) {
+    var promise = new Promise(function(resolve, reject) {
       var req = Agave.api.files.download({systemId: file.system, filePath: file.path}, {mock: true});
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
@@ -193,19 +238,21 @@
       xhr.setRequestHeader('Authorization', 'Bearer ' + Agave.token.accessToken);
       xhr.responseType = 'blob';
       xhr.send();
-    })
-    .then(
+    });
+
+    promise.then(
       function(fileData) {
         window.saveAs(fileData, file.name);
       },
       function(err) {
-        console.log(err);
         showAlert({ message: err.message, type: 'danger', autoDismiss: 5000 });
       }
     );
+
+    return promise;
   }
 
-  function preview(file) {
+  function previewFile(file) {
     var $preview = $('<div class="preview loading"><div class="preview-overlay"></div><div class="preview-header container"><header><button type="button" data-dismiss="preview" class="btn btn-danger btn-sm pull-right">&times;</button><h4 class="preview-title"></h4></header></div><div class="container preview-item-wrapper"><div class="preview-item"></div></div></div>');
     $('body').append($preview);
 
@@ -245,7 +292,15 @@
             }
             resolve(true);
           } else {
-            reject(JSON.parse(this.response));
+            if (this.responseType === 'blob') {
+              var reader = new FileReader();
+              reader.onload = function() {
+                reject(JSON.parse(reader.result));
+              };
+              reader.readAsText(this.response);
+            } else {
+              reject(JSON.parse(this.response));
+            }
           }
         }
       };
