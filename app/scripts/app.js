@@ -344,7 +344,13 @@
       );
     })
     .then(init)
-    .then(indicator);
+    .then(function() {
+      var defaultSystems = _.filter(systems, { 'default': true });
+      if (defaultSystems.length) {
+        $('select[name="system"]', $appContext).val(defaultSystems[0].id);
+        selectSystem(defaultSystems[0].id);
+      }
+    });
   });
 
 })(window, jQuery, _);
