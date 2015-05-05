@@ -14,18 +14,30 @@
   var currentFiles;
   var currentPath;
 
-  templates.systems = _.template('<option value="">Choose a system to browse</option><% _.each(systems, function(system) { %><option value="<%= system.id %>">(<%= system.id %>) <%= system.name %></option><% }); %>');
+  templates.systems = _.template(
+    '<option value="">Choose a system to browse</option>' +
+    '<optgroup label="Private Systems"><% _.each(privateSystems, function(system) { %><option value="<%= system.id %>">(<%= system.id %>) <%= system.name %></option><% }); %></optgroup>' +
+    '<optgroup label="Public Systems"><% _.each(publicSystems, function(system) { %><option value="<%= system.id %>">(<%= system.id %>) <%= system.name %></option><% }); %></optgroup>'
+    );
   templates.files = _.template(
     '<% _.each(files, function(file, i) { %><tr data-file-index="<%= i %>"><td><%= file.name %></td>'+
     '<td><i class="fa fa-<%= file.type === \'dir\' ? \'folder\' : \'file\' %>"></i> <%= file.mimeType %></td>' +
-    '<td><% if (file.type === \'file\') { %><%= niceFileSize(file.length) %><% } %></td><td>'+
+    '<td><% if (file.type === \'file\') { %><%= niceFileSize(file.length) %><% } %></td>' +
+    '<td><%= fileActions({file: file}) %></td></tr><% }); %>'
+    );
+  templates.fileActions = _.template(
     '<% if (file.type === \'file\') { %>' +
-    '<button title="Preview" name="preview" class="btn btn-xs btn-info"><i class="fa fa-eye"></i><span class="sr-only">Preview</span></button> '+
-    '<button title="Download" name="download" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i><span class="sr-only">Download</span></button> '+
-    '<button title="Delete" name="delete" class="btn btn-xs btn-danger"><i class="fa fa-times"></i><span class="sr-only">Delete</span></button> '+
+      '<% if (file.permissions === \'READ\' || file.permissions === \'READ_WRITE\' || file.permissions === \'ALL\' ) { %>' +
+        '<button title="Preview" name="preview" class="btn btn-xs btn-info"><i class="fa fa-eye"></i><span class="sr-only">Preview</span></button> ' +
+        '<button title="Download" name="download" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i><span class="sr-only">Download</span></button> ' +
+      '<% } if (file.permissions === \'READ_WRITE\' || file.permissions === \'ALL\') { %>' +
+        '<button title="Delete" name="delete" class="btn btn-xs btn-danger"><i class="fa fa-times"></i><span class="sr-only">Delete</span></button> ' +
+      '<% } %>' +
     '<% } else if (file.type === \'dir\'){%>' +
-    '<button title="Open" name="open" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i><span class="sr-only">Open</span></button> '+
-    '<% } %></td></tr><% }); %>');
+    '<button title="Open" name="open" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i><span class="sr-only">Open</span></button> ' +
+    '<% } %>'
+    );
+
 
   var nextSuffix = {
     'bytes': 'KB',
@@ -68,7 +80,10 @@
 
   function init() {
     $('select[name="system"]', $appContext)
-    .html(templates.systems({ systems: systems }))
+    .html(templates.systems({
+      privateSystems: _.filter(systems, { public: false }),
+      publicSystems: _.filter(systems, { public: true })
+    }))
     .on('change', function() {
       selectSystem(this.value);
     });
@@ -128,7 +143,7 @@
         files.shift();
       }
       currentFiles = files;
-      $('.display-files', $appContext).html( templates.files( { files: currentFiles, niceFileSize: niceFileSize } ) );
+      $('.display-files', $appContext).html( templates.files( { files: currentFiles, niceFileSize: niceFileSize, fileActions: templates.fileActions } ) );
 
       $('button[name="open"]', $appContext).on( 'click', function(e) {
         e.preventDefault();
