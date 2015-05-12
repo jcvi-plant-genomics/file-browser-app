@@ -289,7 +289,7 @@
                 .on('load', function() {
                   URL.revokeObjectURL(blobUrl);
                 })
-                .appendTo('.preview-item', $preview);
+                .appendTo('.file-browser-app-preview-item', $preview);
               $('.file-browser-app-preview-item', $preview).addClass('embed-responsive embed-responsive-4by3');
             } else if (file.mimeType.indexOf('image') === 0) {
               // img
