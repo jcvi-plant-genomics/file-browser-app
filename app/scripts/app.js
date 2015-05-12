@@ -268,10 +268,10 @@
   }
 
   function previewFile(file) {
-    var $preview = $('<div class="preview loading"><div class="preview-overlay"></div><div class="preview-header container"><header><button type="button" data-dismiss="preview" class="btn btn-danger btn-sm pull-right">&times;</button><h4 class="preview-title"></h4></header></div><div class="container preview-item-wrapper"><div class="preview-item"></div></div></div>');
+    var $preview = $('<div class="file-browser-app-preview loading"><div class="file-browser-app-preview-overlay"></div><div class="file-browser-app-preview-header container"><header><button type="button" data-dismiss="preview" class="btn btn-danger btn-sm pull-right">&times;</button><h4 class="file-browser-app-preview-title"></h4></header></div><div class="container file-browser-app-preview-item-wrapper"><div class="file-browser-app-preview-item"></div></div></div>');
     $('body').append($preview);
 
-    $('.preview-title', $preview).text(file.name);
+    $('.file-browser-app-preview-title', $preview).text(file.name);
 
     new Promise(function(resolve, reject) {
       var req = Agave.api.files.download({systemId: file.system, filePath: file.path}, {mock: true});
@@ -290,7 +290,7 @@
                   URL.revokeObjectURL(blobUrl);
                 })
                 .appendTo('.preview-item', $preview);
-              $('.preview-item', $preview).addClass('embed-responsive embed-responsive-4by3');
+              $('.file-browser-app-preview-item', $preview).addClass('embed-responsive embed-responsive-4by3');
             } else if (file.mimeType.indexOf('image') === 0) {
               // img
               blobUrl = URL.createObjectURL( this.response );
@@ -300,10 +300,10 @@
                 .on('load', function() {
                   URL.revokeObjectURL(blobUrl);
                 })
-                .appendTo('.preview-item', $preview);
+                .appendTo('.file-browser-app-preview-item', $preview);
             } else {
               // text
-              $('<pre>').appendTo('.preview-item', $preview).text(this.response);
+              $('<pre>').appendTo('.file-browser-app-preview-item', $preview).text(this.response);
             }
             resolve(true);
           } else {
@@ -329,7 +329,7 @@
       xhr.send();
     }).then(function() {
       $preview.removeClass('loading');
-      $('.preview-overlay, [data-dismiss="preview"]', $preview).on('click', function() { $preview.remove(); });
+      $('.file-browser-app-preview-overlay, [data-dismiss="preview"]', $preview).on('click', function() { $preview.remove(); });
     }, function(err) {
       $preview.remove();
       showAlert({ message: err.message, type: 'danger', autoDismiss: 5000 });

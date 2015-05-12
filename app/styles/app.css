@@ -30,7 +30,7 @@
   border-bottom-right-radius: 0;
 }
 
-.preview {
+.file-browser-app-preview {
   position: fixed;
   top: 0;
   right: 0;
@@ -39,7 +39,7 @@
   z-index: 1000000;
 }
 
-.preview.loading:after {
+.file-browser-app-preview.loading:after {
   content: "Loading...";
   position: absolute;
   font-size: 36px;
@@ -53,7 +53,7 @@
   box-shadow: 0 0 2px rgba(0,0,0,0.2);
 }
 
-.preview-overlay {
+.file-browser-app-preview-overlay {
   position: absolute;
   top: 0;
   right: 0;
@@ -63,35 +63,35 @@
   background-color: rgba(0,0,0,0.2);
 }
 
-.preview-item-wrapper {
+.file-browser-app-preview-item-wrapper {
   position: relative;
   top: 50px;
   max-height: calc(100% - 200px);
   overflow: auto;
 }
 
-.preview-item * {
+.file-browser-app-preview-item * {
   margin: auto;
 }
 
-.preview.loading .preview-header {
+.file-browser-app-preview.loading .file-browser-app-preview-header {
   display: none;
 }
 
-.preview-header {
+.file-browser-app-preview-header {
   position: relative;
   top: 50px;
   margin: 6px auto;
 }
 
-.preview-header header {
+.file-browser-app-preview-header header {
   padding: 1px;
   border: 1px solid #fff;
   background: #f5f5f5;
   border-bottom: 0;
 }
 
-.preview-header button {
+.file-browser-app-preview-header button {
   position: relative;
   top: 4px;
   right: 4px;
