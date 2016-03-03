@@ -534,7 +534,7 @@
       "path": "/files/v2/pems/system/{systemId}/{filePath}"
     }
   ],
-  "basePath": "https://api.araport.org",
+  "basePath": "https://agave.iplantc.org",
   "models": {
     "EmptyRemoteFileResponse": {
       "id": "EmptyRemoteFileResponse",

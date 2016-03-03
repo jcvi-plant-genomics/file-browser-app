@@ -400,7 +400,7 @@
             "path": "/jobs/v2/{attribute}/{value}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "ACL": {
             "id": "ACL",

@@ -345,7 +345,7 @@
             "path": "/profiles/v2/{username}/users/search/{term}/{value}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "InternalUser": {
             "id": "InternalUser",

@@ -1,6 +1,6 @@
 {
     "apiVersion": "2.0.0-SNAPSHOT-r1dc40",
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "authorizations": ["oauth2"],
     "swaggerVersion": "1.2",
     "resourcePath": "/apps/v2",

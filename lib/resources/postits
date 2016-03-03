@@ -26,7 +26,7 @@
                             "paramType": "body",
                             "required": true,
                             "type": "PostItRequest",
-                            "defaultValue": "{\n\t\"url\": \"https://api.araport.org/files/v2/media/system/demo.storage.example.com/wc-1.00/picksumipsum.txt\",\n\t\"method\": \"GET\",\n\t\"maxUses\": 25,\n\t\"lifetime\": 3600,\n\t\"noauth\": false\n}"
+                            "defaultValue": "{\n\t\"url\": \"https://agave.iplantc.org/files/v2/media/system/demo.storage.example.com/wc-1.00/picksumipsum.txt\",\n\t\"method\": \"GET\",\n\t\"maxUses\": 25,\n\t\"lifetime\": 3600,\n\t\"noauth\": false\n}"
                         }
                     ],
                     "responseMessages": [
@@ -77,7 +77,7 @@
             "path": "/postits/v2/{nonce}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "PostIt": {
             "id": "PostIt",

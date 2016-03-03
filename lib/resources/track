@@ -41,7 +41,7 @@
             "path": "/track/v2/"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "SingleTrackResponse": {
             "id": "SingleTrackResponse",

@@ -163,7 +163,7 @@
             "path": "/transforms/v2/tags/{tag}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "Decoder": {
             "id": "Decoder",

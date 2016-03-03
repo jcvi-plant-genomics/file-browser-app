@@ -909,7 +909,7 @@
             "path": "/meta/v2/schemas/{uuid}/pems/{username}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "ACL": {
             "id": "ACL",

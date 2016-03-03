@@ -602,7 +602,7 @@
             "path": "/systems/v2/{systemId}/credentials/{internalUsername}/{credentialType}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "EmptySystemResponse": {
             "id": "EmptySystemResponse",

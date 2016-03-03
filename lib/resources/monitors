@@ -396,7 +396,7 @@
             "path": "/monitors/v2/{monitorId}/checks/{checkId}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "EmptyMonitor": {
             "id": "EmptyMonitor",

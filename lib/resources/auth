@@ -103,7 +103,7 @@
             "path": "/auth/v2/tokens/{token}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "EmptyTokenResponse": {
             "id": "SingleTokenResponse",

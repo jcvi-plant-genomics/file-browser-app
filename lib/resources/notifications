@@ -214,7 +214,7 @@
             "path": "/notifications/v2/{uuid}"
         }
     ],
-    "basePath": "https://api.araport.org",
+    "basePath": "https://agave.iplantc.org",
     "models": {
         "EmptyNotification": {
             "id": "EmptyNotification",

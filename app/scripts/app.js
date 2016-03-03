@@ -127,8 +127,8 @@
 
   function systemDefaultPath(system) {
     var path;
-    if ( system.id === 'araport-public-files' ) {
-      path = '/TAIR10_genome_release';
+    if ( system.id === 'cyverse-legfed-datastore' ) {
+      path = '/';
     } else if ( system.public ) {
       path = '/' + currentUser.username;
     } else {
