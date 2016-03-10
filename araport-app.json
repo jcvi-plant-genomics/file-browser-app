@@ -1,0 +1,13 @@
+{
+  "icon": "",
+  "name": "file-browser-app",
+  "description": "JS File Browser powered by Agave API",
+  "html": "app.html",
+  "scripts": [
+    "scripts/aip-helper.js",
+    "scripts/app.js"
+  ],
+  "styles": [
+    "styles/app.css"
+  ]
+}
